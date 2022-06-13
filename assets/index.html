@@ -1,0 +1,19 @@
+<html>
+<head>
+    <title>Socket.IO - Node.js</title>
+    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Socket.IO</h1>
+    <p>このページはNode.jsで動いています！</p>
+    <p>同時接続数: <span id="number">0</span>人</p>
+    <script>
+        const socket = io();
+        socket.on('count', function(value) {
+			$("#number").html(value);
+		});
+    </script>
+</body>
+
+</html>

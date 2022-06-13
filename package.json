@@ -1,0 +1,13 @@
+{
+  "name": "node-js",
+  "version": "1.0.0",
+  "author": "hato810424",
+  "main":"server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.4.1"
+  }
+}
