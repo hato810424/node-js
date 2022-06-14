@@ -8,10 +8,14 @@
     <h1>Socket.IO</h1>
     <p>このページはNode.jsで動いています！</p>
     <p>同時接続数: <span id="number">0</span>人</p>
+    <ul id="logs"></ul>
     <script>
         const socket = io();
         socket.on('count', function(value) {
 			$("#number").html(value);
+		});
+        socket.on('log', function(value) {
+			$('ul').append('<li>'+value+'</li>');
 		});
     </script>
 </body>
