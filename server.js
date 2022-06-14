@@ -1,15 +1,20 @@
 // 初期化
 var http = require('http');
-var fs = require('fs');
 var ejs = require("ejs");
-let logs = Array();
+//
+let players = Array();
 
 // サーバー設定
 var server = http.createServer(function (req, res) {
     // ページ振り分け
+    let webdata = {};
     switch (req.url) {
         case "/":
             filename = "assets/index.ejs";
+            break;
+        case "/mouth":
+            filename = "assets/mouth.ejs";
+            webdata = {json_data: players,}
             break;
         default:
             filename = "notfound"
@@ -21,9 +26,7 @@ var server = http.createServer(function (req, res) {
         res.end("404 NotFound");
     } else {
         // ページレンダー
-        ejs.renderFile(filename, {
-            json_data: logs,
-        }, function (err, data) {
+        ejs.renderFile(filename, webdata, function (err, data) {
             if (err) {
                 console.log({ err });
                 res.writeHead(404, { 'Content-Type': 'text/plain;charset=utf-8' });
@@ -49,19 +52,47 @@ var io = require('socket.io')(server);
 // 初期化
 var connect = 0;
 
+// グローバル
 io.on('connection', (socket) => {
     // 接続
     connect++;
     io.emit('count', connect);
-    io.emit('log', socket.id+"さんが接続しました。");
-    logs.push({"id":socket.id,"message":"接続"});
-    
-
     // 切断
 	socket.on('disconnect', function () {
 		connect--;
         io.emit('count', connect); 
-        io.emit('log', socket.id+"さんが切断しました。");
-        logs.push({"id":socket.id,"message":"切断"});
+	});
+});
+
+//
+const mouth = io.of("/mouth");
+mouth.on('connection', (socket) => {
+    players.push(
+        {
+            "id":socket.id,
+            "x":0,
+            "y":0
+        }
+    );
+    mouth.emit('join', socket.id);
+    socket.on('move', function(value) {
+        for (var i in players) {
+            if (players[i].id == socket.id) {
+                players[i] = {
+                    "id":socket.id,
+                    "x":value.x,
+                    "y":value.y
+                }
+            }
+        }
+        socket.broadcast.emit('move',socket.id,value);
+    });
+    socket.on('disconnect', function () {
+        for (var i in players) {
+            if (players[i].id == socket.id) {
+                players.splice(i, 1);
+            }
+        }
+        mouth.emit('leave', socket.id);
 	});
 });

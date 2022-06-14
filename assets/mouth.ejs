@@ -1,0 +1,72 @@
+<html>
+<head>
+    <title>いろいろ試す - Socket.IO</title>
+    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.min.js"></script>
+</head>
+<body>
+    <style>
+        body {
+            margin: 0;
+        }
+        #players {
+            position: fixed;
+            height: 100%;
+            width: 100%;
+        }
+        .player {
+            position: fixed;
+            background: rgb(255, 156, 156);
+            border-radius: 10px;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            z-index: 100;
+            pointer-events: none;
+        }
+    </style>
+    <div id="players">
+        <% let count = 0; %><% if(json_data) { %><%  for (var i in json_data) { %><div class="player" value="<%= json_data[i].id %>" style="top: <%= json_data[i].y %>px; left: <%= json_data[i].x %>px;"></div>
+        <% count++ %><% }; %><% }; %>
+    </div>
+    <script>
+        const socket = io("/mouth");
+        
+        var count = "<%= count %>";
+        var count = Number(count);
+        id = "";
+
+        socket.on("connect", () => {
+            id = socket.id;
+        });
+        socket.on('join', function(value) {
+			if (!$('div[value="' + value + '"]').length) {
+                count++
+                let add = $("#players").append('<div class="player" value="'+value+'"></div>');
+            };
+		});
+        socket.on('leave', function(value) {
+			$('div[value="' + value + '"]').remove();
+		});
+        socket.on('move', function(id,value) {
+			$('div[value="' + id + '"]').css({
+                "top": value.y + "px",
+                "left": value.x + "px"
+            });
+		});
+
+        $(document).on("mousemove", function (e) {
+                //カーソルの座標位置を取得
+                var x = e.clientX;
+                var y = e.clientY;
+                socket.emit("move", {"x":x,"y":y});
+                //カーソル要素のcssを書き換える用
+                $('div[value="' + id + '"]').css({
+                    "top": y + "px",
+                    "left": x + "px"
+                });
+            });
+    </script>
+</body>
+
+</html>

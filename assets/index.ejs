@@ -7,22 +7,13 @@
 <body>
     <h1>Socket.IO</h1>
     <p>このページはNode.jsで動いています！</p>
-    <p>同時接続数: <span id="number">0</span>人</p>
+    <p>Node.js接続数: <span id="number">0</span>人</p>
     <ul id="logs">
-        <%# if(json_data){ %>
-            <%#  for (var i in json_data) { %> 
-                <%#= "<li>"+json_data[i].id+"さんが"+json_data[i].message+"しました</li>" %>
-            <%# }; %> 
-        <%# }; %>
     </ul>
     <script>
         const socket = io();
         socket.on('count', function(value) {
 			$("#number").html(value);
-		});
-        socket.on('log', function(value) {
-            console.log({value});
-			//$('ul').append('<li>'+value+'</li>');
 		});
     </script>
 </body>
