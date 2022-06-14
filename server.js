@@ -8,6 +8,7 @@ let players = Array();
 var server = http.createServer(function (req, res) {
     // ページ振り分け
     let webdata = {};
+    req.url = req.url.replace(/^\/\//,'/')
     switch (req.url) {
         case "/":
             filename = "assets/index.ejs";
@@ -23,7 +24,7 @@ var server = http.createServer(function (req, res) {
 
     if(filename == "notfound"){
         res.writeHead(404, {'Content-Type': 'text/plain;charset=utf-8'});
-        res.end("404 NotFound");
+        res.end("404 NotFound\n"+req.url);
     } else {
         // ページレンダー
         ejs.renderFile(filename, webdata, function (err, data) {
