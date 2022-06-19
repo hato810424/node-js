@@ -2,6 +2,7 @@
 <head>
     <title>いろいろ試す - Socket.IO</title>
     <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/2.4.0/fabric.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.min.js"></script>
 </head>
 <body>
@@ -26,7 +27,7 @@
         }
     </style>
     <div id="players">
-        <% let count = 0; %><% if(json_data) { %><%  for (var i in json_data) { %><div class="player" value="<%= json_data[i].id %>" style="top: <%= json_data[i].y %>px; left: <%= json_data[i].x %>px;"></div>
+        <% let count = 0; %><% if(data) { for (var i in data) { %><div class="player" value="<%= data[i].id %>"style="top: <%= data[i].y %>px; left: <%= data[i].x %>px;"></div>
         <% count++ %><% }; %><% }; %>
     </div>
     <script>
